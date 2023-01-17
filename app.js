@@ -44,6 +44,21 @@ const Article = mongoose.model("Article",articleSchema);
 app.post("/articles",(req,res)=>{
     console.log(req.body.title);
     console.log(req.body.content);
+    const newArticle = new Article(
+        {
+            title: req.body.title,
+            content:req.body.content
+        }
+    );
+    newArticle.save((err)=>{
+        if(!err) {
+            res.send("Όλα πήγαν καλά");
+        }
+        else 
+        {
+            res.send(err);
+        }
+    });
     
 } );
 
