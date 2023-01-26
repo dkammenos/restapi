@@ -26,22 +26,22 @@ const Article = mongoose.model("Article",articleSchema);
 // Δηλωση μοντέλου σχήματος σε μία γραμμή
 //const Article = mongoose.model("Article",{title:"string",content:"string"});
 //Step 1 Get command
-// app.get("/articles",(req,res)=>{
-//     Article.find((err,findArticles)=>{
-//         if (!err){
-//             res.send(findArticles);
-//             console.log(findArticles);
-//         } else
-//         {
-//             console.log("tin patsime");
-//             res.send(err);
+app.route("/articles")
+.get((req,res)=>{
+    Article.find((err,findArticles)=>{
+        if (!err){
+            res.send(findArticles);
+            console.log(findArticles);
+        } else
+        {
+            console.log("tin patsime");
+            res.send(err);
         
-//         }
+        }
         
-//     });
-// } );
-
-app.post("/articles",(req,res)=>{
+        });
+    })
+.post((req,res)=>{
     console.log(req.body.title);
     console.log(req.body.content);
     const newArticle = new Article(
@@ -59,8 +59,63 @@ app.post("/articles",(req,res)=>{
             res.send(err);
         }
     });
+})
+.delete((req,res)=>{
+    Article.deleteMany((err)=>{
+        if (!err){
+            res.send("Όλα πήγαν καλά-Διαγράφηκαν");
+        } else
+        {
+            res.send(err);
+        
+        }
+        
+    });
+})
+app.route("/articles/:articleTitle") 
+.get((req,res) =>{
+    Article.findOne({title:req.params.articleTitle},(err, foundArtickle)=> {
+        //console.log(req.params.articleTitle);
+        if(foundArtickle){
+                res.send(foundArtickle);
+                console.log(foundArtickle);
+        } else {
+            res.send("Den vretike timope")
+           // console.log("tzifos");
+        }
+        })
+    })
+
+    .put((req,res) => {
+        Article.updateOne(
+            {title:req.params.articleTitle},
+            {title:req.body.title, content: req.body.content},
+            {overwrite:true},
+            (err)=>{
+                res.send("lathos stin enimerosi"+err)
+            }
+        )
+    });
     
-} );
+    
+    
+    
+    ;
+
+    
+
+// app.get("/articles",
+// } );
+// //Δημιουργία άρθρου
+// app.post("/articles",
+    
+// } );
+// //Διαγραφή όλων των άρθρων
+// app.delete("/articles",
+// } );
+
+
+
 
 
 app.listen(process.env.PORT || 3000, () => {
